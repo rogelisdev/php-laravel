@@ -2,82 +2,71 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\DTOs\ProductoDTO;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreProductoRequest;
+use App\Http\Requests\UpdateProductoRequest;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 
 class ProductoController extends Controller
 {
     //
-    public function index(){
-        $productos = Producto::all();
+    public function index()
+    {
+        $productos = Producto::paginate(5);
         return view('productos.index', compact('productos'));
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $producto = Producto::findOrFail($id);
         return view('productos.show', compact('producto'));
     }
 
 
-public function store(Request $request)
-{
-    $request->validate([
-        'nombre' => 'required|string|max:255',
-        'descripcion' => 'nullable|string',
-        'precio' => 'required|numeric',
-        'stock' => 'required|integer'
-    ]);
+    public function store(StoreProductoRequest $request)
+    {
+        $dto = ProductoDTO::fromRequest($request);
 
-    Producto::create([
-        'nombre' => $request->nombre,
-        'descripcion' => $request->descripcion,
-        'precio' => $request->precio,
-        'stock' => $request->stock
-    ]);
+        Producto::create($dto->toArray());
 
-    return redirect()->route('productos.index')
-                     ->with('success', 'Producto creado exitosamente');
-}
+        // Redirige a la lista con mensaje flash
+        return redirect()->route('productos.index')
+            ->with('success', 'Producto creado correctamente');
+    }
 
 
-    public function create(){
+
+    public function create()
+    {
         return view('productos.create');
     }
 
-    public function edit($id){
-    $producto = Producto::findOrFail($id);
-    return view('productos.edit', compact('producto'));
+    public function edit($id)
+    {
+        $producto = Producto::findOrFail($id);
+        return view('productos.edit', compact('producto'));
+    }
+
+    public function update(UpdateProductoRequest $request, $id)
+    {
+        $producto = Producto::findOrFail($id);
+
+        $dto = ProductoDTO::fromRequest($request);
+
+        $producto->update($dto->toArray());
+
+        return redirect()->route('productos.index')
+            ->with('success', 'Producto actualizado correctamente');
     }
 
 
-    public function update(Request $request, $id){
-    $request->validate([
-        'nombre' => 'required|string|max:255',
-        'descripcion' => 'nullable|string',
-        'precio' => 'required|numeric',
-        'stock' => 'required|integer'
-    ]);
+    public function destroy($id)
+    {
+        Producto::destroy($id);
 
-    $producto = Producto::findOrFail($id);
-
-    $producto->update([
-        'nombre' => $request->nombre,
-        'descripcion' => $request->descripcion,
-        'precio' => $request->precio,
-        'stock' => $request->stock
-    ]);
-
-    return redirect()->route('productos.index')
-                     ->with('success', 'Producto actualizado');
-}
-
-
-    public function destroy($id){
-    Producto::destroy($id);
-
-    return redirect()->route('productos.index')
-                     ->with('success', 'Producto eliminado');
-}
-
+        return redirect()->route('productos.index')
+            ->with('success', 'Producto eliminado');
+    }
 }
