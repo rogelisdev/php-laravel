@@ -1,41 +1,48 @@
 <?php
-
-use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\ProductoController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
-Route::get('/', [HomeController::class, 'index'])-> name('home.index');
+// Ruta pública
+Route::get('/', function () {
+    return view('welcome');
+})->name('welcome');
 
-Route::get('/prueba', function (){
-    return 'Esto es una prueba';
+// Rutas protegidas
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
+
+    // Dashboard
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    // Productos
+    Route::prefix('productos')->group(function () {
+
+        // Mostrar lista de productos (admin ve todos, user ve solo los suyos)
+        Route::get('/', [ProductoController::class, 'index'])->name('productos.index');
+
+        // Crear producto
+        Route::get('/create', [ProductoController::class, 'create'])->name('productos.create');
+        Route::post('/', [ProductoController::class, 'store'])->name('productos.store');
+
+        // Editar producto
+        Route::get('/{producto}/edit', [ProductoController::class, 'edit'])->name('productos.edit');
+        Route::put('/{producto}', [ProductoController::class, 'update'])->name('productos.update');
+        Route::delete('/{producto}', [ProductoController::class, 'destroy'])->name('productos.destroy');
+
+        // Mostrar producto
+        Route::get('/{producto}', [ProductoController::class, 'show'])->name('productos.show');
+    });
+
+    // Usuarios → solo admin
+    Route::get('/usuarios', function () {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'No tienes permiso para ver usuarios');
+        }
+        return app(UserController::class)->index();
+    })->name('usuarios.index');
 });
-
-// index
-Route::get('/productos', [ProductoController::class, 'index'])
-    ->name('productos.index');
-
-// create (SIEMPRE antes de {id})
-Route::get('/productos/crear', [ProductoController::class, 'create'])
-    ->name('productos.create');
-
-// store
-Route::post('/productos', [ProductoController::class, 'store'])
-    ->name('productos.store');
-
-// show
-Route::get('/productos/{id}', [ProductoController::class, 'show'])
-    ->name('productos.show');
-
-// edit
-Route::get('/productos/{id}/editar', [ProductoController::class, 'edit'])
-    ->name('productos.edit');
-
-// update
-Route::put('/productos/{id}', [ProductoController::class, 'update'])
-    ->name('productos.update');
-
-// destroy
-Route::delete('/productos/{id}', [ProductoController::class, 'destroy'])
-    ->name('productos.destroy');
 
 
