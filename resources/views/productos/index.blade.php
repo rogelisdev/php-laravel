@@ -32,12 +32,12 @@
                     </thead>
                     <tbody>
                         @forelse($productos as $producto)
-                            <tr class="border-b">
-                                <td class="p-3">{{ $producto->id }}</td>
-                                <td class="p-3">{{ $producto->nombre }}</td>
-                                <td class="p-3">${{ number_format($producto->precio,2) }}</td>
-                                <td class="p-3">{{ $producto->stock }}</td>
-                                <td class="p-3 flex gap-3">
+                            <tr class="border-b hover:bg-gray-100">
+                                <td class="p-3 text-center">{{ $producto->id }}</td>
+                                <td class="p-3 text-center">{{ $producto->nombre }}</td>
+                                <td class="p-3 text-center">${{ number_format($producto->precio,2) }}</td>
+                                <td class="p-3 text-center">{{ $producto->stock }}</td>
+                                <td class="p-3 flex flex-row justify-center gap-2">
                                     <a href="{{ route('productos.show',$producto) }}">👁</a>
                                     <a href="{{ route('productos.edit',$producto) }}">✏️</a>
                                     <form method="POST" action="{{ route('productos.destroy',$producto) }}">
