@@ -10,8 +10,8 @@
             <div class="bg-white rounded-3xl shadow-2xl p-8">
 
                 @if ($errors->any())
-                    <div class="bg-red-200 text-red-800 p-3 rounded mb-6">
-                        <ul>
+                    <div class="bg-red-200 text-red-800 p-3 rounded mb-6 text-sm">
+                        <ul class="list-disc ml-5">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
@@ -19,27 +19,50 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('productos.store') }}" class="space-y-4">
+                <form method="POST" action="{{ route('productos.store') }}" class="space-y-4" enctype="multipart/form-data">
                     @csrf
 
-                    <input name="nombre" class="w-full border rounded p-2" placeholder="Nombre">
-                    <textarea name="descripcion" class="w-full border rounded p-2" placeholder="Descripción"></textarea>
-                    <input name="precio" class="w-full border rounded p-2" placeholder="Precio">
-                    <input name="stock" class="w-full border rounded p-2" placeholder="Stock">
-                    <!-- Categoría -->
-                    <select name="category_id" class="w-full border rounded p-2" required>
-                        <option value="">Seleccione una categoría</option>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-bold mb-2">Imagen del Producto</label>
+                        <input type="file" name="imagen" accept="image/*"
+                            class="border rounded w-full py-2 px-3 @error('imagen') border-red-500 @enderror">
+                        @error('imagen')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
 
+                    <hr class="my-4">
+                    <p class="font-bold text-gray-600">Datos del producto:</p>
+
+                    <input name="nombre" value="{{ old('nombre') }}"
+                        class="w-full border rounded p-2 @error('nombre') border-red-500 @enderror" placeholder="Nombre">
+
+                    <textarea name="descripcion"
+                        class="w-full border rounded p-2 @error('descripcion') border-red-500 @enderror" placeholder="Descripción">{{ old('descripcion') }}</textarea>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <input name="precio" value="{{ old('precio') }}" type="number" step="0.01"
+                            class="w-full border rounded p-2 @error('precio') border-red-500 @enderror" placeholder="Precio">
+
+                        <input name="stock" value="{{ old('stock') }}" type="number"
+                            class="w-full border rounded p-2 @error('stock') border-red-500 @enderror" placeholder="Stock">
+                    </div>
+
+                    <select name="category_id" class="w-full border rounded p-2 @error('category_id') border-red-500 @enderror" required>
+                        <option value="">Seleccione una categoría</option>
                         @foreach ($categories as $category)
-                            <option value="{{ $category->id }}">
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                 {{ $category->name }}
                             </option>
                         @endforeach
                     </select>
 
-                    <button class="bg-green-500 text-white px-4 py-2 rounded">
-                        Guardar
-                    </button>
+                    <div class="flex items-center justify-end mt-4">
+                        <a href="{{ route('productos.index') }}" class="text-gray-600 mr-4">Cancelar</a>
+                        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-2 rounded-xl transition shadow-md">
+                            Guardar Producto
+                        </button>
+                    </div>
                 </form>
 
             </div>

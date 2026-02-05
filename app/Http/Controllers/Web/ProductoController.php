@@ -27,20 +27,24 @@ class ProductoController extends Controller
     // Crear producto → asignamos user_id automáticamente
     public function store(StoreProductoRequest $request)
     {
-        // 1. Transformamos el request validado en un DTO
-        $dto = ProductoDTO::fromRequest($request);
+        $data = $request->validated();
 
-        // 2. Creamos la instancia con los datos del DTO
-        $producto = new Producto($dto->toArray());
+    // 1. Manejar la subida de la imagen si existe
+    if ($request->hasFile('imagen')) {
+        // Guardar en storage/app/public/productos y obtener la ruta
+        $path = $request->file('imagen')->store('productos', 'public');
+        $data['imagen_path'] = $path;
+    }
 
-        // 3. Asignamos manualmente los campos de auditoría o relación directa
-        $producto->user_id = Auth::id();
+    // 2. Crear DTO con la ruta de la imagen incluida
+    $dto = ProductoDTO::fromRequest($request->merge(['imagen_path' => $data['imagen_path'] ?? null]));
 
-        // 4. Guardamos en la base de datos
-        $producto->save();
+    // 3. Crear producto y asignar usuario
+    $producto = new Producto($dto->toArray());
+    $producto->user_id = Auth::id();
+    $producto->save();
 
-        return redirect()->route('productos.index')
-            ->with('success', 'Producto creado correctamente');
+    return redirect()->route('productos.index')->with('success', '¡Producto creado con éxito!');
     }
 
     public function create()

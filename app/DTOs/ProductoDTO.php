@@ -13,6 +13,7 @@ class ProductoDTO
         public readonly ?string $descripcion,
         public readonly int $stock,
         public readonly int $category_id, // 1. Agregado al constructor
+        public readonly mixed $imagen = null,
     ) {}
 
     public static function fromRequest(StoreProductoRequest|UpdateProductoRequest $request): self
@@ -26,6 +27,7 @@ class ProductoDTO
             stock: (int) $data['stock'],
             // Aseguramos que siempre haya un valor o lanzamos una excepción clara
             category_id: (int) ($data['category_id'] ?? $request->category_id), // 2. Obtenido del request validado
+            imagen: $data['imagen_path'] ?? null, // Usaremos esta llave temporal
         );
     }
 
