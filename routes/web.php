@@ -43,6 +43,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         }
         return app(UserController::class)->index();
     })->name('usuarios.index');
+
+    Route::get('/products/category/{id}', [ProductoController::class, 'byCategory']);
+
 });
 
 

@@ -26,6 +26,16 @@
                     <textarea name="descripcion" class="w-full border rounded p-2" placeholder="Descripción"></textarea>
                     <input name="precio" class="w-full border rounded p-2" placeholder="Precio">
                     <input name="stock" class="w-full border rounded p-2" placeholder="Stock">
+                    <!-- Categoría -->
+                    <select name="category_id" class="w-full border rounded p-2" required>
+                        <option value="">Seleccione una categoría</option>
+
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}">
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
 
                     <button class="bg-green-500 text-white px-4 py-2 rounded">
                         Guardar

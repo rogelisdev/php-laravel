@@ -12,19 +12,23 @@ class ProductoDTO
         public readonly float $precio,
         public readonly ?string $descripcion,
         public readonly int $stock,
+        public readonly int $category_id, // 1. Agregado al constructor
     ) {}
 
-public static function fromRequest(StoreProductoRequest|UpdateProductoRequest $request): self
-{
-    $data = $request->validated();
+    public static function fromRequest(StoreProductoRequest|UpdateProductoRequest $request): self
+    {
+        $data = $request->validated();
 
-    return new self(
-        nombre: $data['nombre'],
-        precio: (float) $data['precio'], // conversión
-        descripcion: $data['descripcion'] ?? null,
-        stock: (int) $data['stock'],     // conversión
-    );
-}
+        return new self(
+            nombre: $data['nombre'],
+            precio: (float) $data['precio'],
+            descripcion: $data['descripcion'] ?? null,
+            stock: (int) $data['stock'],
+            // Aseguramos que siempre haya un valor o lanzamos una excepción clara
+            category_id: (int) ($data['category_id'] ?? $request->category_id), // 2. Obtenido del request validado
+        );
+    }
+
     public function toArray(): array
     {
         return [
@@ -32,7 +36,7 @@ public static function fromRequest(StoreProductoRequest|UpdateProductoRequest $r
             'precio' => $this->precio,
             'descripcion' => $this->descripcion,
             'stock' => $this->stock,
+            'category_id' => $this->category_id, // 3. Incluido en el array para el Model::create
         ];
     }
-
 }

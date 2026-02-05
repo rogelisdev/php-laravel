@@ -22,10 +22,11 @@ class UpdateProductoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombre'      => 'sometimes|string|max:255',
+            'nombre'      => 'required|string|max:255',
+            'precio'      => 'required|numeric|min:0',
+            'stock'       => 'required|integer|min:0',
             'descripcion' => 'nullable|string',
-            'precio'      => 'sometimes|numeric|min:0',
-            'stock'       => 'sometimes|integer|min:0',
+            'category_id' => 'required|exists:categories,id', // <-- ESTO EVITA EL ERROR 500
         ];
     }
 }
