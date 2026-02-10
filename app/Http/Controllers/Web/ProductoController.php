@@ -29,23 +29,31 @@ class ProductoController extends Controller
     {
         $data = $request->validated();
 
-    // 1. Manejar la subida de la imagen si existe
-    if ($request->hasFile('imagen')) {
-        // Guardar en storage/app/public/productos y obtener la ruta
-        $path = $request->file('imagen')->store('productos', 'public');
-        $data['imagen_path'] = $path;
+        // 1. Subir imagen y guardar SOLO la ruta
+        if ($request->hasFile('imagen')) {
+            $data['imagen'] = $request->file('imagen')->store('productos', 'public');
+        }
+
+        // 2. Crear el DTO con datos limpios (NO Request)
+        $dto = new ProductoDTO(
+            nombre: $data['nombre'],
+            precio: (float) $data['precio'],
+            descripcion: $data['descripcion'] ?? null,
+            stock: (int) $data['stock'],
+            category_id: (int) $data['category_id'],
+            imagen: $data['imagen'] ?? null
+        );
+
+        // 3. Guardar producto
+        $producto = new Producto($dto->toArray());
+        $producto->user_id = Auth::id();
+        $producto->save();
+
+        return redirect()
+            ->route('productos.index')
+            ->with('success', '¡Producto creado con éxito!');
     }
 
-    // 2. Crear DTO con la ruta de la imagen incluida
-    $dto = ProductoDTO::fromRequest($request->merge(['imagen_path' => $data['imagen_path'] ?? null]));
-
-    // 3. Crear producto y asignar usuario
-    $producto = new Producto($dto->toArray());
-    $producto->user_id = Auth::id();
-    $producto->save();
-
-    return redirect()->route('productos.index')->with('success', '¡Producto creado con éxito!');
-    }
 
     public function create()
     {

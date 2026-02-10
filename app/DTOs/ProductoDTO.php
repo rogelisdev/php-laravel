@@ -27,7 +27,7 @@ class ProductoDTO
             stock: (int) $data['stock'],
             // Aseguramos que siempre haya un valor o lanzamos una excepción clara
             category_id: (int) ($data['category_id'] ?? $request->category_id), // 2. Obtenido del request validado
-            imagen: $data['imagen_path'] ?? null, // Usaremos esta llave temporal
+            imagen: $data['imagen'] ?? null, // Usaremos esta llave temporal
         );
     }
 
@@ -39,6 +39,7 @@ class ProductoDTO
             'descripcion' => $this->descripcion,
             'stock' => $this->stock,
             'category_id' => $this->category_id, // 3. Incluido en el array para el Model::create
+            'imagen' => $this->imagen, // Y también la imagen
         ];
     }
 }

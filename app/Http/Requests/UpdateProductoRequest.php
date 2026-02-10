@@ -27,6 +27,7 @@ class UpdateProductoRequest extends FormRequest
             'stock'       => 'required|integer|min:0',
             'descripcion' => 'nullable|string',
             'category_id' => 'required|exists:categories,id', // <-- ESTO EVITA EL ERROR 500
-        ];
+            'imagen'      => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validación para la imagen
+            ];
     }
 }

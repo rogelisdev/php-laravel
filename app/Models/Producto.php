@@ -16,7 +16,8 @@ class Producto extends Model
         'descripcion',
         'stock',
         'category_id', // <-- DEBE ESTAR AQUÍ
-        'user_id'
+        'user_id',
+        'imagen', // <-- Y TAMBIÉN LA IMAGEN
     ];
 
     public function user()

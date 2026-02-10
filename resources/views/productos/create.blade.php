@@ -19,7 +19,8 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('productos.store') }}" class="space-y-4" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('productos.store') }}" class="space-y-4"
+                    enctype="multipart/form-data">
                     @csrf
 
                     <div class="mb-4">
@@ -35,23 +36,28 @@
                     <p class="font-bold text-gray-600">Datos del producto:</p>
 
                     <input name="nombre" value="{{ old('nombre') }}"
-                        class="w-full border rounded p-2 @error('nombre') border-red-500 @enderror" placeholder="Nombre">
+                        class="w-full border rounded p-2 @error('nombre') border-red-500 @enderror"
+                        placeholder="Nombre">
 
-                    <textarea name="descripcion"
-                        class="w-full border rounded p-2 @error('descripcion') border-red-500 @enderror" placeholder="Descripción">{{ old('descripcion') }}</textarea>
+                    <textarea name="descripcion" class="w-full border rounded p-2 @error('descripcion') border-red-500 @enderror"
+                        placeholder="Descripción">{{ old('descripcion') }}</textarea>
 
                     <div class="grid grid-cols-2 gap-4">
-                        <input name="precio" value="{{ old('precio') }}" type="number" step="0.01"
-                            class="w-full border rounded p-2 @error('precio') border-red-500 @enderror" placeholder="Precio">
+                        <input name="precio" value="{{ old('precio') }}" type="text" inputmode="decimal"
+                            placeholder="0.00"
+                            class="w-full border rounded p-2 @error('precio') border-red-500 @enderror" />
 
                         <input name="stock" value="{{ old('stock') }}" type="number"
-                            class="w-full border rounded p-2 @error('stock') border-red-500 @enderror" placeholder="Stock">
+                            class="w-full border rounded p-2 @error('stock') border-red-500 @enderror"
+                            placeholder="Stock">
                     </div>
 
-                    <select name="category_id" class="w-full border rounded p-2 @error('category_id') border-red-500 @enderror" required>
+                    <select name="category_id"
+                        class="w-full border rounded p-2 @error('category_id') border-red-500 @enderror" required>
                         <option value="">Seleccione una categoría</option>
                         @foreach ($categories as $category)
-                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                            <option value="{{ $category->id }}"
+                                {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                 {{ $category->name }}
                             </option>
                         @endforeach
@@ -59,7 +65,8 @@
 
                     <div class="flex items-center justify-end mt-4">
                         <a href="{{ route('productos.index') }}" class="text-gray-600 mr-4">Cancelar</a>
-                        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-2 rounded-xl transition shadow-md">
+                        <button type="submit"
+                            class="bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-2 rounded-xl transition shadow-md">
                             Guardar Producto
                         </button>
                     </div>
