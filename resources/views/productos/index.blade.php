@@ -9,7 +9,7 @@
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
 
             <a href="{{ route('productos.create') }}"
-               class="inline-block mb-6 px-6 py-3 bg-purple-500 text-white rounded-xl font-bold">
+            class="inline-block mb-6 px-6 py-3 bg-purple-500 text-white rounded-xl font-bold">
                 + Nuevo Producto
             </a>
 

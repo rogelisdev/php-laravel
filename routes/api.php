@@ -1,8 +1,10 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ProductoApiController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::name('api.')->group(function () {
+
+    Route::apiResource('productos', ProductoApiController::class);
+
+});
